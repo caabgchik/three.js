@@ -1,5 +1,7 @@
 var files = {
 	"webgl": [
+		"osm",
+		"osmbuilding",
 		"webgl_animation_cloth",
 		"webgl_animation_keyframes_json",
 		"webgl_animation_scene",

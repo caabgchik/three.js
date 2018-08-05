@@ -1,0 +1,220 @@
+
+<html>
+<head>
+  <title>OSM Buildings</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta property="title" content="OSM Buildings">
+  <meta property="description" content="OSM Buildings - We serve urban data.">
+  <meta property="keywords" content="OSM Buildings, OSMBuildings, OSM-Buildings, 3D Buildings, Extruded Buildings, Building Geometry, 3D Massing, Vector Tiles, 3D Architecture, OSM-3D, 3D, VR, Virtual Reality, DEM, Elevation Model, LIDAR, Point Cloud, Building, Buildings, CityGML, City model, Virtual city models, Leaflet, LeafletJS, Leaflet.js, OpenLayers, Jan Marsch, Berlin, Terrain, Map, Maps, Mapbox, Mapbox GL, Cesium, CartoDB, CARTO, Mapzen, Perspective, Polygons, OSM, OpenStreetMap, JS, JavaScript, Library, WebGL, Example, Examples, Indoor, Layer, BuildingLayer, BuildingsLayer, Footprint, Coordinates, Geometry, JSON, GeoJSON, Height, Extract, node, nodeJS, node.js, PostGIS, Geo, GPS, GIS, Visualization, Latitude, Longitude, Mercator, Projection, Panning, Zooming, API">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <link href="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.css" rel="stylesheet">
+  <script src="https://cdn.osmbuildings.org/4.0.0/OSMBuildings.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
+  <style>
+  html, body {
+    overflow: hidden;
+  }
+
+  #map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .osmb-attribution {
+    bottom: 35px !important;
+  }
+
+  @media screen and (max-width: 640px) {
+    .osmb-attribution {
+      display: none;
+    }
+  }
+  </style>
+
+  <script src="js/lib/jquery-3.2.1.min.js"></script>
+  <script src="./js/Events.js"></script>
+  <script src="./js/Search.js"></script>
+  <script src="./js/Params.js"></script>
+  <script src="./js/index.js"></script>
+  <script src="./js/map.js"></script>
+</head>
+
+<body class="fullscreen">
+
+<div id="app">
+  
+<header>
+  <a href="./"><img src="./images/logo-text.svg" title="OSM Buildings" class="logo"></a>
+
+  
+  <ul class="navigation">
+    <li><a href="./solutions/">Solutions</a></li>
+    <li><a href="./data/">Data</a></li>
+    <li><a href="./blog/">Blog</a></li>
+    <li><a href="./developer/">Developer</a></li>
+
+          <li><a href="./login/">Login</a></li>
+      </ul>
+
+</header>
+  <div id="map"></div>
+
+  <div id="sidebar">
+    <div id="sidebar-scroll">
+      <ul id="search-results"></ul>
+    </div>
+    <style>
+#promo {
+  width: 100%; /* needed for images */
+  height: 285px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: rgba(255, 153, 0, 0.2);
+  padding: 10px 20px;
+}
+
+#promo h1 {
+  font-size: 20px;
+  color: #333333;
+  margin: 5px 0 10px 0;
+}
+
+.promo-quote {
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
+#slider {
+  margin-bottom: 10px;
+}
+
+#slider ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  position: relative
+}
+
+#slider li {
+  display: block;
+  position: absolute;
+}
+
+#slider img {
+  max-width: 100%;
+}
+
+#slider .caption {
+  margin: 5px 0;
+  font-size: 12px;
+}
+</style>
+
+<div id="promo">
+  <h1>Looking for our data?</h1>
+
+  <div id="slider">
+    <ul>
+      <li>
+        <img src="./promo/01.jpg">
+        <div class="caption">
+        Objects for 3d production<br>
+        <a href="./promo/samples.zip" class="link">Download samples</a>
+        <a href="./contact/" class="link promo-quote">Get a quote</a>
+        </div>
+      </li>
+      <li>
+        <img src="./promo/02.jpg">
+        <div class="caption">
+        Objects for 3d production, terrain included<br>
+        <a href="./promo/samples.zip" class="link">Download samples</a>
+        <a href="./contact/" class="link promo-quote">Get a quote</a>
+        </div>
+      </li>
+      <li>
+        <img src="./promo/03.jpg">
+        <div class="caption">
+        GIS data for Analysis<br>
+        <a href="./promo/samples.zip" class="link">Download samples</a>
+        <a href="./contact/" class="link promo-quote">Get a quote</a>
+        </div>
+      </li>
+      <li>
+        <img src="./promo/04.jpg">
+        <div class="caption">
+          GIS data for Analysis, properties included<br>
+          <a href="./promo/samples.zip" class="link">Download samples</a>
+          <a href="./contact/" class="link promo-quote">Get a quote</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<script>
+$(function() {
+  var num = 4;
+  var active = 0;
+
+  $('#slider img').click(next);
+
+  $('#slider li').each(function(index, li) {
+    $(li)[index ? 'hide' : 'show']()
+  });
+
+  var isFading = false;
+  function next() {
+    if (isFading) {
+      return;
+    }
+
+    isFading = true;
+
+    clearTimeout(timer);
+
+    var $curr = $($('#slider li')[active]);
+    var $next = $($('#slider li')[(active+1) % num]);
+
+    $curr.after($next);
+
+    $curr.fadeOut('slow');
+    $next.fadeIn('slow', function() {
+      $curr.hide();
+      if (active < num-1) active++;
+      isFading = false;
+      timer = setTimeout(next, 6000);
+    });
+  }
+
+  var timer = setTimeout(next, 6000);
+
+  showSidebar(); // toggles other styles too
+});
+</script>
+  </div>
+
+  <form id="search">
+    <input type="text" autocorrect="off" placeholder="Search">
+    <button id="search-trigger-button"type="button" class="icon-button fa-icon" title="Start search">&#xf002;</button><span class="vr"></span><button id="sidebar-toggle-button" type="button" class="icon-button fa-icon" title="Toggle sidebar">&#xf0c9;</button>
+  </form>
+
+  <footer>
+
+
+<ul>
+<li><a href="./copyright/">© OSM Buildings</a></li>
+<li><a href="https://twitter.com/osmbuildings/" title="@osmbuildings on Twitter">Twitter</a></li>
+<li><a href="https://github.com/osmbuildings/" title="OSM Buildings on Github">Github</a></li>
+<li><a href="./privacy/">Privacy</a></li>
+<li><a href="./terms/">Terms</a></li>
+<li><a href="./contact/">Contact</a></li>
+</ul>
+
+</footer></div>
+
+</body>
+</html>
